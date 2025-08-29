@@ -3,18 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>LTV Loss Calculator – Embed</title>
+  <title>LTV Loss Calculator – Embed (Green + UTM Persist)</title>
   <style>
-    /* ========= Brand tokens (approximating original Tailwind classes) ========= */
+    /* ========= Brand tokens (approx original Tailwind theme) ========= */
     :root{
       --brand-bg:#0a0b0f;            /* page background (near-black) */
       --brand-card:#12131a;          /* card background */
       --brand-text:#f3f4f6;          /* primary text */
       --brand-muted:#98a2b3;         /* muted text */
-      --brand-primary:#ff1f3d;       /* Convertico red */
+      --brand-primary:#ff1f3d;       /* Convertico red for CTA / highlights */
       --brand-primary-600:#e01832;   /* darker red hover */
-      --brand-accent:#ffd166;        /* warm accent */
-      --brand-success:#22c55e;       /* green */
+      --brand-accent:#22c55e;        /* emerald green (replacing yellow) */
+      --brand-success:#22ff8a;       /* same neon green for "win" values */
       --border:#22242f;              /* subtle borders */
     }
 
@@ -28,7 +28,7 @@
       font:16px/1.5 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji;
     }
 
-    /* Utility-ish classes to match original naming */
+    /* Utility-ish classes */
     .maxw{max-width:1200px;margin:0 auto;padding:0 1.25rem}
     .section{padding:3.5rem 0}
     .text-center{text-align:center}
@@ -80,18 +80,24 @@
     /* Range styling */
     .range{appearance:none;width:100%;height:0.425rem;background:#1b1d27;border-radius:999px;outline:none}
     .range::-webkit-slider-thumb{
-      appearance:none;width:18px;height:18px;border-radius:50%;background:var(--brand-accent);
-      border:2px solid #11131a;box-shadow:0 0 0 4px rgba(255,209,102,.25);cursor:pointer;
+      appearance:none;width:18px;height:18px;border-radius:50%;
+      background:radial-gradient(35% 35% at 50% 50%, #ffffff 0%, var(--brand-accent) 60%);
+      border:2px solid #0b0d12;
+      box-shadow:0 0 0 6px rgba(34,255,138,.28), 0 0 22px rgba(34,255,138,.25);
+      cursor:pointer;
       transition:box-shadow .2s ease, transform .1s ease;
     }
-    .range:active::-webkit-slider-thumb{transform:scale(1.02)}
+    .range:active::-webkit-slider-thumb{transform:scale(1.03)}
     .range::-moz-range-thumb{
-      width:18px;height:18px;border-radius:50%;background:var(--brand-accent);
-      border:2px solid #11131a;box-shadow:0 0 0 4px rgba(255,209,102,.25);cursor:pointer;
+      width:18px;height:18px;border-radius:50%;
+      background:var(--brand-accent);
+      border:2px solid #0b0d12;
+      box-shadow:0 0 0 6px rgba(34,255,138,.28), 0 0 22px rgba(34,255,138,.25);
+      cursor:pointer;
     }
 
     /* Result card */
-    .result-card{padding:2rem}
+    .result-card{padding:2rem;background:var(--brand-card);border:1px solid var(--border);border-radius:1.25rem}
     .big-number{font-size:clamp(2.25rem, 3vw + 1rem, 3.25rem);font-weight:800;color:var(--brand-primary);letter-spacing:.3px}
     .muted{color:var(--brand-muted);margin-top:.25rem}
 
@@ -103,21 +109,18 @@
       overflow:hidden;
     }
     .impact-row .badge{
-      display:inline-flex;align-items:center;gap:.4rem;
-      background:var(--brand-accent);color:#111;padding:.25rem .6rem;border-radius:999px;font-size:.85rem;font-weight:700;
+      display:inline-flex;align-items:center;gap:.45rem;
+      background:var(--brand-success);color:#0a0b0f;padding:.25rem .6rem;border-radius:999px;
+      font-size:.85rem;font-weight:800; letter-spacing:.15px; text-shadow:0 0 8px rgba(34,255,138,.35);
+      box-shadow:0 0 0 3px rgba(34,255,138,.28);
     }
     .impact-row .value{
-      font-size:clamp(1.5rem, 2vw + .75rem, 2rem);font-weight:800;float:right;color:var(--brand-accent);
+      font-size:clamp(1.5rem, 2vw + .75rem, 2rem);font-weight:900;float:right;
+      color:var(--brand-success); text-shadow:0 0 14px rgba(34,255,138,.25);
     }
-
-    /* Small icon styles */
-    .icon{display:inline-block;vertical-align:middle}
-    .icon svg{width:1.25rem;height:1.25rem}
 
     /* Container wrapper for the whole embed for easy theming */
     .embed-shell{padding:2rem 0}
-    .card{background:var(--brand-card);border:1px solid var(--border);border-radius:1.25rem}
-    .pad{padding:2rem}
 
     /* Subheading */
     .sub{max-width:42rem;margin:.25rem auto 0;color:var(--brand-muted)}
@@ -127,7 +130,7 @@
       outline:none
     }
     :where(button,input[type=range],input[type=number]):focus-visible{
-      box-shadow:0 0 0 2px rgba(255,255,255,.07), 0 0 0 4px rgba(255,31,61,.35);
+      box-shadow:0 0 0 2px rgba(255,255,255,.07), 0 0 0 4px rgba(34,255,138,.28);
     }
 
     /* Optional count-up animation */
@@ -209,7 +212,7 @@
           </div>
 
           <!-- Results -->
-          <div class="card result-card">
+          <div class="result-card">
             <h3 class="text-center" style="margin-top:0">Lost LTV Opportunity</h3>
             <div class="text-center" style="margin:1.25rem 0 2rem">
               <div id="lostLtv" class="big-number count-anim">$0</div>
@@ -221,7 +224,7 @@
               <div class="impact-row">
                 <span class="badge">+1pp
                   <span class="icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:1rem;height:1rem">
                       <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
                       <polyline points="17 6 23 6 23 12"></polyline>
                     </svg>
@@ -233,7 +236,7 @@
               <div class="impact-row">
                 <span class="badge">+2pp
                   <span class="icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:1rem;height:1rem">
                       <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
                       <polyline points="17 6 23 6 23 12"></polyline>
                     </svg>
@@ -245,7 +248,7 @@
               <div class="impact-row">
                 <span class="badge">+3pp
                   <span class="icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:1rem;height:1rem">
                       <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
                       <polyline points="17 6 23 6 23 12"></polyline>
                     </svg>
@@ -263,28 +266,56 @@
   </main>
 
   <script>
-    /* ===== UTM + GA helper (parity with original) ===== */
-    function getUTMParams(){
-      const urlParams = new URLSearchParams(window.location.search);
-      return {
-        utm_source: urlParams.get("utm_source") || "",
-        utm_medium: urlParams.get("utm_medium") || "",
-        utm_campaign: urlParams.get("utm_campaign") || "",
-        utm_content: urlParams.get("utm_content") || "",
-        utm_term: urlParams.get("utm_term") || ""
-      };
+    /* ===== Robust UTM persistence (90-day TTL) ===== */
+    const UTM_KEYS = ["utm_source","utm_medium","utm_campaign","utm_content","utm_term"];
+    const UTM_STORAGE_KEY = "convertico_utms";
+    const UTM_TTL_MS = 90 * 24 * 60 * 60 * 1000;
+
+    function parseUTMs(qs){
+      const p = new URLSearchParams(qs||"");
+      const o = {}; UTM_KEYS.forEach(k => o[k] = p.get(k) || "");
+      return o;
     }
-    function appendUTMs(url){
-      const utms = getUTMParams();
-      const urlObj = new URL(url);
-      Object.entries(utms).forEach(([k,v])=>{ if(v) urlObj.searchParams.set(k,v); });
-      return urlObj.toString();
+    function hasAnyUTM(obj){ return UTM_KEYS.some(k => obj[k] && obj[k].trim() !== ""); }
+    function saveUTMs(u){
+      try{ localStorage.setItem(UTM_STORAGE_KEY, JSON.stringify({ ...u, _ts: Date.now() })); }catch(e){}
     }
-    function trackEvent(name, parameters={}){
-      if(window.gtag){ window.gtag('event', name, parameters); }
+    function loadUTMs(){
+      try{
+        const raw = localStorage.getItem(UTM_STORAGE_KEY);
+        if(!raw) return {};
+        const data = JSON.parse(raw);
+        if(!data || !data._ts) return {};
+        const age = Date.now() - data._ts;
+        if(age > UTM_TTL_MS){ localStorage.removeItem(UTM_STORAGE_KEY); return {}; }
+        const out = {}; UTM_KEYS.forEach(k => out[k] = data[k] || "");
+        return out;
+      }catch(e){ return {}; }
+    }
+    function mergeUTMs(primary, fallback){
+      const out = {}; UTM_KEYS.forEach(k => out[k] = primary[k] || fallback[k] || ""); return out;
     }
 
-    /* ===== Calculator state & bindings ===== */
+    // On load: capture current UTMs (if any), else use stored.
+    const currentUTMs = parseUTMs(window.location.search);
+    const storedUTMs  = loadUTMs();
+    const activeUTMs  = mergeUTMs(currentUTMs, storedUTMs);
+    if(hasAnyUTM(currentUTMs)) saveUTMs(activeUTMs);
+
+    function appendUTMs(url){
+      const urlObj = new URL(url);
+      UTM_KEYS.forEach(k => { if(activeUTMs[k]) urlObj.searchParams.set(k, activeUTMs[k]); });
+      return urlObj.toString();
+    }
+
+    // GA4 event tracking passthrough (if gtag exists in iframe)
+    function trackEvent(eventName, parameters = {}) {
+      if (typeof window !== "undefined" && window.gtag) {
+        window.gtag("event", eventName, parameters);
+      }
+    }
+
+    /* ===== Calculator state & bindings (parity with original logic) ===== */
     const els = {
       sessionsRange: document.getElementById('sessionsRange'),
       sessionsNum:   document.getElementById('sessionsNum'),
@@ -398,3 +429,4 @@
   </script>
 </body>
 </html>
+
